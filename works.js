@@ -314,12 +314,22 @@ const WORKS = [
     flow: {
       nodes: [
         { id: "criteria", title: "기준표 먼저", text: "유형, 요청, 감정, 긴급도를 정의와 예시로", x: 8, y: 50 },
-        { id: "answer", title: "정답표로 기준 다듬기", text: "사람끼리 먼저 맞춰 보니 급한 건 19건 → 8건", x: 26, y: 22 },
-        { id: "clean", title: "정리와 개인정보 가리기", text: "브라우저 안에서만, AI에는 가린 글만", x: 26, y: 78 },
+        { id: "answer", title: "정답표로 기준 다듬기", text: "사람끼리 먼저 맞춰 보니 급한 건 19건 → 8건", x: 26, y: 22,
+          image: "images/works/review-analyzer/01-answer.webp",
+          caption: "AI를 붙이기 전에 30건을 직접 분류한 정답표. 주황 칸은 기준표를 다듬으며 바뀐 곳이고, 오른쪽에 바뀐 이유를 남김. 처음에는 긴급도가 30건 중 19건으로 넓게 읽혀 정의와 헷갈리는 예를 더함" },
+        { id: "clean", title: "정리와 개인정보 가리기", text: "브라우저 안에서만, AI에는 가린 글만", x: 26, y: 78,
+          image: "images/works/review-analyzer/02-clean.webp",
+          caption: "정리 기록과 개인정보를 가린 글. 312줄에서 제목 줄, 빈 줄, 중복을 걸러 300건이 되고, 전화번호, 주소, 이름, 주문번호, 이메일은 박음질 모양 표시로 가려져 AI에는 가린 글만 감" },
         { id: "ai", title: "AI 분류 서버 함수", text: "20건씩 Gemini에, 기준표 밖의 값은 다시", x: 47, y: 50 },
-        { id: "evidence", title: "근거 검사", text: "원문에 없는 근거는 확인필요로", x: 68, y: 22 },
-        { id: "measure", title: "정답표와 대조", text: "26/30 → 29/30, 놓친 급한 건 0", x: 68, y: 78 },
-        { id: "report", title: "보고서 엑셀", text: "즉시 대응, 상품별 불만, 확인필요", x: 89, y: 50 }
+        { id: "evidence", title: "근거 검사", text: "원문에 없는 근거는 확인필요로", x: 68, y: 22,
+          image: "images/works/review-analyzer/03-evidence.webp",
+          caption: "'확인필요'로 걸러진 2건. 이모티콘만 있는 리뷰와 근거 문구를 원문과 다르게 옮긴 경우로, AI가 고른 근거가 원문에 실제로 없어서 사람이 보도록 돌림" },
+        { id: "measure", title: "정답표와 대조", text: "26/30 → 29/30, 놓친 급한 건 0", x: 68, y: 78,
+          image: "images/works/review-analyzer/04-measure.webp",
+          caption: "같은 정답표로 잰 개선 전후. 기준표 v3에서 세 칸 모두 일치가 26건에서 29건으로, 300건 처리 시간이 640초에서 123초로 줄었고 급한 건은 두 번 모두 놓치지 않음" },
+        { id: "report", title: "보고서 엑셀", text: "즉시 대응, 상품별 불만, 확인필요", x: 89, y: 50,
+          image: "images/works/review-analyzer/05-report.webp",
+          caption: "내려받은 보고서 엑셀의 요약 시트와 상품별 시트. 요약 문장과 숫자는 AI가 아니라 집계한 숫자로 만들어서 표의 결과와 항상 같음" }
       ],
       edges: [["criteria", "answer"], ["criteria", "clean"], ["answer", "ai"], ["clean", "ai"],
               ["ai", "evidence"], ["ai", "measure"], ["evidence", "report"], ["measure", "report"]]
