@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>BAEK SANGYEOP | Motion designer working with AI tools</title>
+  <meta name="description" content="AI 툴을 활용하는 모션 디자이너 BAEK SANGYEOP의 포트폴리오입니다.">
+  <meta name="theme-color" content="#0E0F11">
+  <meta name="color-scheme" content="dark">
+
+  <!-- 첫 방문이면 프리로더를 보여 주고 히어로 연출을 잠시 멈춤 (화면이 그려지기 전에 실행)
+       모션 줄이기 설정이면 건너뜀. 5초 안전장치: 스크립트가 실패해도 페이지가 보이게 함 -->
+  <script>
+    (function () {
+      var root = document.documentElement;
+      try {
+        var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+        if (!reduce && !sessionStorage.getItem("introSeen")) {
+          root.classList.add("is-loading", "intro-hold");
+          setTimeout(function () { root.classList.remove("is-loading", "intro-hold"); }, 5000);
+        }
+      } catch (e) {}
+    })();
+  </script>
+
+  <!-- 글꼴: Pretendard Variable (CDN). 적용이 안 되면 시스템 글꼴로 대체됨 -->
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css">
+  <link rel="stylesheet" href="https://unpkg.com/lenis@1.3.26/dist/lenis.css">
+  <link rel="stylesheet" href="style.css">
+
+  <!-- 순서 중요: 라이브러리(GSAP, ScrollTrigger, Lenis) → works.js(데이터) → script.js(동작) -->
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/gsap.min.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/ScrollTrigger.min.js" defer></script>
+  <script src="https://unpkg.com/lenis@1.3.26/dist/lenis.min.js" defer></script>
+  <script src="works.js" defer></script>
+  <script src="script.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">본문으로 건너뛰기</a>
+
+  <!-- 프리로더: 장식용이라 화면 낭독기는 건너뜀. 클릭하거나 키를 누르면 빨리 끝남 -->
+  <div class="preloader" aria-hidden="true">
+    <span class="preloader__num">0</span>
+    <div class="preloader__bar"><span></span></div>
+  </div>
+
+  <header class="site-header">
+    <div class="wrap site-header__inner">
+      <!-- 히어로의 큰 이름이 화면 위로 빠져나가면, 이 작은 이름이 헤더에 나타남 (이름 넘겨받기) -->
+      <a class="brand" href="#top" aria-label="BAEK SANGYEOP, 맨 위로"><span class="brand__text">BAEK SANGYEOP</span></a>
+
+      <button class="nav-toggle" type="button"
+              aria-expanded="false" aria-controls="site-nav" aria-label="메뉴 열기">
+        <span class="nav-toggle__bars" aria-hidden="true"></span>
+      </button>
+
+      <nav id="site-nav" class="site-nav" aria-label="주요 메뉴">
+        <ul>
+          <li><a href="#works">작업</a></li>
+          <li><a href="#about">소개</a></li>
+          <li><a href="#contact">연락</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main">
+
+    <!-- 1. 히어로: 줄마다 바깥 상자(.line)가 가리고, 안쪽 글자(.line__text)가 올라옴 -->
+    <section class="hero" id="top" aria-labelledby="hero-title">
+      <div class="wrap hero__inner">
+        <!-- 감싸는 상자(.hero__name-wrap): 스크롤로 작아지며 사라지는 연출을 담당.
+             3D 이름(h1)에 직접 투명도를 주면 입체감이 납작해지기 때문에 바깥 상자에 줌 -->
+        <div class="hero__name-wrap">
+          <h1 class="hero__name" id="hero-title"><span class="line"><span class="line__text">BAEK</span></span> <span class="line"><span class="line__text">SANGYEOP</span></span></h1>
+        </div>
+        <p class="hero__role">Motion designer working with AI tools</p>
+        <div class="hero__actions">
+          <a class="btn btn--primary" href="#works">작업 보기</a>
+          <a class="btn btn--ghost" href="#contact">연락하기</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2. 쇼릴: 스크롤하면 작은 상자가 화면 전체로 커짐
+         영상이 생기면 .reel-stage__inner 자리를 영상으로 교체 -->
+    <section class="section section--reel" id="reel" aria-labelledby="reel-title">
+      <div class="wrap">
+        <h2 class="section__title" id="reel-title">쇼릴</h2>
+      </div>
+      <div class="reel-track">
+        <div class="reel-stage">
+          <div class="reel-stage__inner">
+            <p class="reel-stage__title">Showreel 2026</p>
+            <p class="reel-stage__note">영상 준비 중</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. 작업 (카드는 works.js 데이터로 script.js가 만들어 넣음) -->
+    <section class="section" id="works" aria-labelledby="works-title">
+      <div class="wrap">
+        <h2 class="section__title" id="works-title">작업</h2>
+        <div class="works" id="works-list">
+          <p class="works__message">작업을 불러오는 중입니다.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 도구 띠: 장식용이라 화면 낭독기는 건너뜀 (실제 목록은 아래 소개에 있음). 내용은 script.js가 채움 -->
+    <div class="marquee" aria-hidden="true">
+      <div class="marquee__track" id="marquee-track"></div>
+    </div>
+
+    <!-- 4. 소개 (임시 문구: 공개 전에 직접 다듬기) -->
+    <section class="section" id="about" aria-labelledby="about-title">
+      <div class="wrap about">
+        <h2 class="section__title" id="about-title">소개</h2>
+        <div class="about__body">
+          <p class="about__lead">움직임으로 아이디어를 전달하는 모션 디자이너입니다. 애프터 이펙트로 타이포그래피와 모션을 만들고, AI 툴을 활용해 제작 과정을 넓혀 갑니다. 디자인을 웹으로 직접 구현하며 배우고 있습니다.</p>
+
+          <dl class="facts">
+            <div>
+              <dt>사용 도구</dt>
+              <dd>
+                <!-- data-tools: 위의 도구 띠가 이 목록을 읽어 감 -->
+                <ul data-tools>
+                  <li>After Effects</li>
+                  <li>Python</li>
+                  <li>Supabase</li>
+                  <li>Vercel</li>
+                  <li>GitHub</li>
+                </ul>
+              </dd>
+            </div>
+            <div>
+              <dt>관심 분야</dt>
+              <dd>
+                <ul>
+                  <li>Motion graphics</li>
+                  <li>AI tools</li>
+                  <li>Interaction</li>
+                </ul>
+              </dd>
+            </div>
+          </dl>
+        </div>
+      </div>
+    </section>
+
+    <!-- 5. 연락 (이메일과 지역 문구는 공개 전에 실제 값으로 교체) -->
+    <section class="section" id="contact" aria-labelledby="contact-title">
+      <div class="wrap contact">
+        <h2 class="section__title" id="contact-title">연락</h2>
+        <!-- TODO: 샘플 주소입니다. 실제 이메일로 바꾸세요 -->
+        <a class="contact__mail" href="mailto:hello@example.com">hello@example.com</a>
+        <!-- TODO: 활동 지역 문구는 아직 미확정. 공개 여부를 직접 결정하세요 -->
+        <p class="contact__note">활동 가능 지역: 천안·아산 중심, 원격 프리랜서 가능</p>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap">
+      <p>&copy; 2026 Baek Sangyeop</p>
+    </div>
+  </footer>
+</body>
+</html>
