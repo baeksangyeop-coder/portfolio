@@ -10,6 +10,7 @@
      비우면 회색 박스
    - brief(문제), requirements(요구사항), process(과정), decisions(선택과 이유), outcome(결과)는
      케이스 스터디 페이지(work.html)에 쓰입니다. brief 가 채워진 작업만 상세 페이지가 열립니다.
+   - flow(작업 흐름 카드)와 media(실제 화면 모음)도 상세 페이지에 쓰입니다.
    - 나중에 Supabase로 옮길 때는 아래 getWorks() 안쪽만 바꾸면 됩니다.
    ========================================================== */
 const WORKS = [
@@ -50,6 +51,30 @@ const WORKS = [
     ],
     outcome: "정답표와 대조해 발주 107행(2,373,500원), 송장 업로드 100건, 업로드 제외 7건, 앞자리 0 송장 18건까지 모두 일치. 기준표만 고쳐 공급사를 하나 더 추가하는 시험에서도 코드 수정 없이 동작했고, 직원이 버튼 두 개로 쓰는 exe와 사용 설명서까지 완성",
     media: [],
+    // 작업 흐름: 상세 페이지에서 카드(노드)가 단계별로 이어지며 나타남
+    // x, y = 화면 안 위치(%), image 가 있는 카드는 누르면 크게 보임
+    flow: {
+      nodes: [
+        { id: "in", title: "주문서 142행", text: "제목 줄, 제각각인 표기, 중복 주문이 섞인 원본", x: 8, y: 50 },
+        { id: "app", title: "버튼 한 번으로 실행", text: "검산 결과와 확인할 건을 화면에 바로 표시", x: 27, y: 50,
+          image: "images/works/order-dispatch/01-app.webp",
+          caption: "직원용 실행 화면. 발주서를 만든 뒤 '공급사별 발주서 107행 = 발주 대상 107행'을 스스로 검산하고, 확인이 필요한 건은 빨간 글자로 알려 줌 (저장 위치의 사용자 이름은 가림)" },
+        { id: "check", title: "확인필요 목록", text: "미등록 상품 4행은 빼고, 이상한 연락처 4행은 따로 알림", x: 47, y: 21,
+          image: "images/works/order-dispatch/03-check.webp",
+          caption: "발주요약 파일의 확인필요 시트. 기준표에 없는 상품과 연락처가 이상한 주문을 시트로 따로 정리 (이름과 연락처는 가상 데이터이며 흐리게 처리)" },
+        { id: "po", title: "공급사별 발주서 5개", text: "공급사 양식대로 만들고, 이상한 번호는 노란색으로", x: 47, y: 78,
+          image: "images/works/order-dispatch/02-po.webp",
+          caption: "공급사에 보내는 발주서. 열 순서와 이름은 공급사마다 다른 양식을 따르고, 자릿수가 이상한 연락처는 노란색 칸과 메모로 표시 (이름, 연락처, 주소는 가상 데이터이며 흐리게 처리)" },
+        { id: "reply", title: "송장 회신 5개 파일", text: "엑셀과 CSV, 제각각인 열 이름을 하나로 합침", x: 66, y: 78 },
+        { id: "report", title: "검증리포트", text: "7가지로 분류하고 건마다 직원이 할 일을 적음", x: 86, y: 25,
+          image: "images/works/order-dispatch/04-report.webp",
+          caption: "업로드에서 뺀 발주 건. 송장 미회신, 송장 충돌, 택배사 표준화 불가를 분류하고 건마다 '할 일'을 붙임" },
+        { id: "upload", title: "업로드 파일 100건", text: "앞자리 0인 송장번호 18건까지 그대로", x: 86, y: 76,
+          image: "images/works/order-dispatch/05-upload.webp",
+          caption: "플랫폼에 올리는 송장업로드 파일. 0으로 시작하는 송장번호가 한 글자도 바뀌지 않고 글자 그대로 저장됨" }
+      ],
+      edges: [["in", "app"], ["app", "check"], ["app", "po"], ["po", "reply"], ["reply", "report"], ["reply", "upload"]]
+    },
     tags: ["엑셀 자동화"],
     link: "",
     image: "",

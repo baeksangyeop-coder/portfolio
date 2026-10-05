@@ -1594,6 +1594,238 @@ h1, h2, h3, p, dl, dd { margin: 0; }
   .case__body { grid-column: 5 / span 8; }
 }
 
+/* ==========================================================
+   작업 흐름 (case.js가 works.js 의 flow 로 그림)
+   기본(휴대폰, 모션 줄이기): 카드가 세로로 이어진 목록
+   데스크톱: 화면에 고정된 판 위에 카드가 흩어져 있고 곡선으로 이어짐
+   .is-live (데스크톱 + 모션 허용): 스크롤할수록 카드가 차례로 나타나고 선이 그려짐
+   ========================================================== */
+.flow { margin-top: clamp(3rem, 7vw, 5rem); }
+
+.flow__title {
+  font-size: clamp(1.25rem, 2.4vw, 1.75rem);
+  font-weight: 700;
+}
+.flow__hint {
+  margin-top: .5rem;
+  font-size: .9375rem;
+  color: var(--text-dim);
+}
+
+/* --- 기본: 세로 목록 --- */
+.flow__canvas {
+  position: relative;
+  display: grid;
+  gap: 1.25rem;
+  margin-top: 1.75rem;
+  padding-left: 1.75rem;
+}
+/* 목록 왼쪽의 세로 연결선 */
+.flow__canvas::before {
+  content: "";
+  position: absolute;
+  top: .5rem;
+  bottom: .5rem;
+  left: .45rem;
+  width: 1px;
+  background: var(--metal-lo);
+}
+.flow__lines { display: none; }
+
+.flow__node {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: .45rem;
+  width: 100%;
+  padding: .9rem;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--surface-1);
+  color: var(--text);
+  font: inherit;
+  text-align: left;
+}
+/* 목록 모드에서 카드 왼쪽의 점 */
+.flow__node::before {
+  content: "";
+  position: absolute;
+  top: 1.15rem;
+  left: calc(-1.75rem + .45rem - 4px);
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: var(--metal-hi);
+}
+.flow__node--shot { cursor: zoom-in; }
+.flow__node--shot:hover { border-color: var(--metal-lo); }
+
+.flow__no {
+  font-size: .75rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  color: var(--metal-mid);
+}
+.flow__shot {
+  display: block;
+  aspect-ratio: 16 / 10;
+  overflow: hidden;
+  border-radius: 8px;
+  background: #fff;
+}
+.flow__shot img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: left top;
+}
+.flow__name { font-size: .9375rem; line-height: 1.35; }
+.flow__text { font-size: .8125rem; line-height: 1.55; color: var(--text-dim); }
+
+/* --- 데스크톱: 흩어진 카드와 곡선 --- */
+@media (min-width: 900px) {
+  .flow__canvas {
+    display: block;
+    height: min(74svh, 660px);
+    min-height: 540px;
+    margin-top: 1rem;
+    padding: 0;
+  }
+  .flow__canvas::before,
+  .flow__node::before { display: none; }
+
+  .flow__lines {
+    display: block;
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    overflow: visible;
+  }
+  .flow__lines path {
+    fill: none;
+    stroke: var(--metal-mid);
+    stroke-width: 1.5;
+    stroke-dasharray: 1;
+    stroke-dashoffset: 0;
+  }
+
+  .flow__node {
+    position: absolute;
+    left: calc(var(--x) * 1%);
+    top: calc(var(--y) * 1%);
+    z-index: 1;
+    width: clamp(180px, 17vw, 250px);
+    transform: translate(-50%, -50%);   /* left/top 이 카드의 가운데가 되도록 */
+  }
+  .flow__node:not(.flow__node--shot) { width: clamp(150px, 13vw, 190px); }
+}
+
+/* --- 스크롤 연출: 판을 화면에 고정하고 단계마다 카드가 등장 --- */
+.flow.is-live .flow__track { height: calc(var(--steps) * 40svh + 100svh); }
+.flow.is-live .flow__stage {
+  position: sticky;
+  top: 0;
+  display: flex;
+  align-items: center;
+  height: 100svh;
+}
+.flow.is-live .flow__canvas { width: 100%; }
+
+.flow.is-live .flow__node {
+  opacity: 0;
+  scale: .82;
+  translate: 0 24px;
+  transition:
+    opacity .45s var(--ease),
+    scale .6s var(--pop),
+    translate .6s var(--pop),
+    border-color .3s var(--ease),
+    box-shadow .3s var(--ease);
+}
+.flow.is-live .flow__node.is-on { opacity: 1; scale: 1; translate: 0 0; }
+.flow.is-live .flow__node.is-current {
+  border-color: var(--metal-hi);
+  box-shadow: 0 0 0 1px var(--metal-hi), 0 24px 60px rgba(0, 0, 0, .55);
+  z-index: 2;
+}
+.flow.is-live .flow__lines path { transition: stroke-dashoffset .25s linear; }
+
+/* --- 크게 보기 (dialog) --- */
+.lightbox {
+  width: min(1400px, 94vw);
+  max-height: 92vh;
+  padding: 0;
+  overflow: auto;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: var(--surface-1);
+  color: var(--text);
+}
+.lightbox::backdrop { background: rgba(8, 9, 10, .82); }
+.lightbox__close {
+  position: sticky;
+  top: .75rem;
+  float: right;
+  z-index: 1;
+  margin: .75rem .75rem 0 0;
+  padding: .45rem 1rem;
+  border: 1px solid var(--metal-lo);
+  border-radius: 999px;
+  background: var(--bg);
+  color: var(--text);
+  font: inherit;
+  font-size: .875rem;
+  cursor: pointer;
+}
+.lightbox__figure { margin: 0; }
+.lightbox__figure img { width: 100%; height: auto; background: #fff; }
+.lightbox__figure figcaption {
+  padding: 1rem 1.25rem 1.25rem;
+  font-size: .9375rem;
+  line-height: 1.7;
+  color: var(--text-dim);
+}
+
+/* 실제 화면 모음: 첫 장은 크게, 나머지는 두 장씩 */
+.case__gallery { margin-top: clamp(3rem, 7vw, 5rem); }
+.case__gallery h2 {
+  margin-bottom: clamp(1.25rem, 3vw, 2rem);
+  font-size: clamp(1.25rem, 2.4vw, 1.75rem);
+  font-weight: 700;
+}
+.case__shots {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: clamp(1rem, 2.5vw, 1.75rem);
+}
+.case__shot { margin: 0; }
+.case__shot a {
+  display: block;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--surface-1);
+}
+.case__shot img {
+  width: 100%;
+  height: auto;
+  transition: scale .6s var(--ease);
+}
+@media (hover: hover) {
+  .case__shot a:hover img { scale: 1.02; }
+}
+.case__shot figcaption {
+  margin-top: .6rem;
+  font-size: .875rem;
+  line-height: 1.6;
+  color: var(--text-dim);
+}
+@media (min-width: 768px) {
+  .case__shots { grid-template-columns: 1fr 1fr; }
+  .case__shot:first-child { grid-column: 1 / -1; }
+}
+
 /* 다음 작업으로 넘어가는 큰 링크 */
 .case__next {
   display: flex;
