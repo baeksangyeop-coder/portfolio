@@ -327,8 +327,10 @@ const lenis = (() => {
 
   function buildWork(work) {
     const card = make("article", "work");
-    // 커서에 띄울 글자: 상세 페이지(link)가 있으면 View, 아직 없으면 Soon
-    card.dataset.cursor = work.link ? "View" : "Soon";
+    // 누르면 갈 곳: 따로 적은 link가 우선, 없으면 케이스 스터디 페이지(내용이 있을 때만)
+    const target = work.link || (hasCase(work) ? `work.html?id=${encodeURIComponent(work.id)}` : "");
+    // 커서에 띄울 글자: 갈 곳이 있으면 View, 아직 없으면 Soon
+    card.dataset.cursor = target ? "View" : "Soon";
 
     const media = make("div", "work__media");
     if (work.image) {
@@ -347,9 +349,9 @@ const lenis = (() => {
     const body = make("div", "work__body");
 
     const title = make("h3", "work__title");
-    if (work.link) {
+    if (target) {
       const anchor = make("a", "", work.title);
-      anchor.href = work.link;
+      anchor.href = target;
       title.appendChild(anchor);
     } else {
       title.textContent = work.title;
@@ -413,18 +415,23 @@ const lenis = (() => {
 
   // 썸네일 크기 맞추기: 카드 상자의 가로·세로를 재서, 16:10 그림판이 잘리지 않는 크기(--u)를 계산
   // 카드 크기가 바뀌면(창 크기 변경 등) 자동으로 다시 계산됨
+  const thumbObserver = "ResizeObserver" in window
+    ? new ResizeObserver((entries) => {
+        entries.forEach((entry) => {
+          const { width, height } = entry.contentRect;
+          const thumb = entry.target.querySelector(".thumb");
+          if (thumb) thumb.style.setProperty("--u", `${Math.min(width, height * 1.6) / 100}px`);
+        });
+      })
+    : null;
+
+  // 상자 하나의 썸네일 크기를 맞춤 (케이스 스터디 페이지에서도 씀)
+  function fitThumb(media) {
+    if (thumbObserver && media.querySelector(".thumb")) thumbObserver.observe(media);
+  }
+
   function fitThumbs() {
-    if (!("ResizeObserver" in window)) return;
-    const observer = new ResizeObserver((entries) => {
-      entries.forEach((entry) => {
-        const { width, height } = entry.contentRect;
-        const thumb = entry.target.querySelector(".thumb");
-        if (thumb) thumb.style.setProperty("--u", `${Math.min(width, height * 1.6) / 100}px`);
-      });
-    });
-    list.querySelectorAll(".work__media").forEach((media) => {
-      if (media.querySelector(".thumb")) observer.observe(media);
-    });
+    list.querySelectorAll(".work__media").forEach(fitThumb);
   }
 
   async function renderWorks() {
@@ -445,7 +452,10 @@ const lenis = (() => {
     }
   }
 
-  renderWorks();
+  // 케이스 스터디 페이지(case.js)에서도 썸네일을 쓸 수 있게 꺼내 둠
+  window.portfolio = { buildThumb, fitThumb };
+
+  if (list) renderWorks();   // 작업 목록이 있는 페이지(첫 화면)에서만
 })();
 
 /* ==========================================================
