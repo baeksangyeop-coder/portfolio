@@ -22,6 +22,15 @@
   --pop: cubic-bezier(0.34, 1.56, 0.64, 1); /* 목표를 살짝 넘었다가 돌아오는 이징: 작업 카드 등장에만 씀 */
 }
 
+/* ---------- 부드러운 스크롤(Lenis) 기본 스타일 ----------
+   원래 unpkg의 lenis.css를 따로 받았는데, 화면을 그리기 전에 기다려야 해서(약 0.8초)
+   내용이 작아 여기로 옮김. Lenis 버전을 올릴 때는 공식 lenis.css와 비교해 볼 것 */
+html.lenis, html.lenis body { height: auto; }
+.lenis.lenis-smooth { scroll-behavior: auto !important; }
+.lenis [data-lenis-prevent] { overscroll-behavior: contain; }
+.lenis.lenis-stopped { overflow: hidden; }
+.lenis.lenis-smooth iframe { pointer-events: none; }
+
 /* ---------- 기본 리셋 ---------- */
 *, *::before, *::after { box-sizing: border-box; }
 

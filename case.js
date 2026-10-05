@@ -86,6 +86,12 @@
      휴대폰, 모션 줄이기: 카드가 위에서 아래로 이어진 목록으로 보임 */
   const SVG_NS = "http://www.w3.org/2000/svg";
 
+  // 카드용 작은 사진 경로: images/works/x/01-app.webp → images/works/x/01-app-sm.webp
+  // (make_small.py가 만들어 둠. webp가 아니면 원본 그대로)
+  function smallImage(src) {
+    return /\.webp$/i.test(src) ? src.replace(/\.webp$/i, "-sm.webp") : src;
+  }
+
   function buildFlow(flow) {
     const nodes = (flow && flow.nodes) || [];
     if (!nodes.length) return null;
@@ -120,7 +126,12 @@
         el.setAttribute("aria-label", `${node.title}: 화면 크게 보기`);
         const frame = make("span", "flow__shot");
         const img = document.createElement("img");
-        img.src = node.image;
+        // 카드에는 작은 사진(-sm.webp)을 쓰고, 누르면 원본을 크게 보여 줌
+        // 작은 사진이 아직 없으면 원본으로 한 번만 바꿔 보여 줌
+        img.src = smallImage(node.image);
+        img.addEventListener("error", () => {
+          if (img.src !== new URL(node.image, location.href).href) img.src = node.image;
+        }, { once: true });
         img.alt = "";
         img.loading = "lazy";
         img.decoding = "async";
