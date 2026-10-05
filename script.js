@@ -327,8 +327,9 @@ const lenis = (() => {
 
   function buildWork(work) {
     const card = make("article", "work");
-    // 누르면 갈 곳: 따로 적은 link가 우선, 없으면 케이스 스터디 페이지(내용이 있을 때만)
-    const target = work.link || (hasCase(work) ? `work.html?id=${encodeURIComponent(work.id)}` : "");
+    // 누르면 갈 곳: 케이스 스터디 페이지가 있으면 그쪽이 우선 (사이트 링크는 상세 페이지 안에서 보여 줌)
+    // 상세 페이지가 없는 작업만 따로 적은 link로 바로 이동
+    const target = hasCase(work) ? `work.html?id=${encodeURIComponent(work.id)}` : (work.link || "");
     // 커서에 띄울 글자: 갈 곳이 있으면 View, 아직 없으면 Soon
     card.dataset.cursor = target ? "View" : "Soon";
 

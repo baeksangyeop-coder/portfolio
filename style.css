@@ -1495,6 +1495,29 @@ h1, h2, h3, p, dl, dd { margin: 0; }
   color: var(--text-dim);
 }
 
+/* 사이트 버튼: 직접 써 볼 수 있는 작업의 상세 페이지에서 설명 바로 아래 */
+.case__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: .75rem 1.25rem;
+  margin-top: clamp(1.5rem, 4vw, 2rem);
+}
+.case__site-arrow {
+  display: inline-block;
+  margin-left: .5rem;
+}
+.case__site-note {
+  margin: 0;
+  font-size: .9375rem;
+  color: var(--text-dim);
+}
+@media (prefers-reduced-motion: no-preference) {
+  .case__site-arrow { transition: transform .35s var(--ease); }
+  .case__site:hover .case__site-arrow,
+  .case__site:focus-visible .case__site-arrow { transform: translate(2px, -2px); }
+}
+
 /* 큰 썸네일: 카드와 같은 모션 썸네일을 크게 (3번 재생, 마우스를 올리면 계속) */
 .case__media {
   position: relative;

@@ -247,6 +247,24 @@
     const parts = [backLink(), make("h1", "case__title", work.title)];
     if (work.summary) parts.push(make("p", "case__summary", work.summary));
 
+    // 사이트 버튼: 직접 써 볼 수 있는 작업이면 설명 바로 아래에 눈에 띄게 (새 탭으로 열림)
+    // linkNote(선택)는 버튼 옆의 작은 안내 문구. 예: 테스트 결제라 돈이 나가지 않음
+    if (work.link) {
+      const actions = make("div", "case__actions");
+      const site = make("a", "btn btn--primary case__site", "사이트 직접 써 보기");
+      site.href = work.link;
+      site.target = "_blank";
+      site.rel = "noopener";
+      site.dataset.cursor = "Open";
+      site.setAttribute("aria-label", `${work.title} 사이트 직접 써 보기 (새 탭)`);
+      const arrow = make("span", "case__site-arrow", "↗");
+      arrow.setAttribute("aria-hidden", "true");
+      site.appendChild(arrow);
+      actions.appendChild(site);
+      if (work.linkNote) actions.appendChild(make("p", "case__site-note", work.linkNote));
+      parts.push(actions);
+    }
+
     // 큰 썸네일: 이미지가 있으면 이미지, 없으면 카드와 같은 모션 썸네일
     const media = make("div", "case__media");
     if (work.image) {
@@ -273,6 +291,7 @@
       row.append(make("dt", "", label), make("dd", "", value));
       meta.appendChild(row);
     });
+
     if (meta.childElementCount) parts.push(meta);
 
     // 작업 흐름 (works.js 의 flow)

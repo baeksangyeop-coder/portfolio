@@ -11,6 +11,8 @@
    - brief(문제), requirements(요구사항), process(과정), decisions(선택과 이유), outcome(결과)는
      케이스 스터디 페이지(work.html)에 쓰입니다. brief 가 채워진 작업만 상세 페이지가 열립니다.
    - flow(작업 흐름 카드)와 media(실제 화면 모음)도 상세 페이지에 쓰입니다.
+   - link 가 있으면 상세 페이지 설명 아래에 '사이트 직접 써 보기' 버튼이 생기고,
+     linkNote(선택)는 버튼 옆의 작은 안내 문구입니다. 카드는 상세 페이지가 있으면 그쪽으로 갑니다.
    - 나중에 Supabase로 옮길 때는 아래 getWorks() 안쪽만 바꾸면 됩니다.
    ========================================================== */
 const WORKS = [
@@ -269,6 +271,7 @@ const WORKS = [
     },
     tags: ["웹 서비스"],
     link: "https://signup-practice.vercel.app",
+    linkNote: "회원가입 후 테스트 결제까지 해 볼 수 있어요. 실제로 돈이 나가지 않아요.",
     image: "",
     thumb: "store",
     status: "",
