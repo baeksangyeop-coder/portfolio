@@ -1751,10 +1751,12 @@ h1, h2, h3, p, dl, dd { margin: 0; }
     left: calc(var(--x) * 1%);
     top: calc(var(--y) * 1%);
     z-index: 1;
-    width: clamp(180px, 17vw, 250px);
+    width: clamp(170px, 15vw, 230px);
     transform: translate(-50%, -50%);   /* left/top 이 카드의 가운데가 되도록 */
   }
   .flow__node:not(.flow__node--shot) { width: clamp(150px, 13vw, 190px); }
+  /* 흩어진 배치에서는 사진을 조금 납작하게 해서 카드끼리 겹치지 않게 (크게 보기는 원본 비율) */
+  .flow__node .flow__shot { aspect-ratio: 16 / 9; }
 }
 
 /* --- 스크롤 연출: 판을 화면에 고정하고 단계마다 카드가 등장 --- */
