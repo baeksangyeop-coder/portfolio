@@ -69,6 +69,29 @@
 
     <!-- 1. 히어로: 줄마다 바깥 상자(.line)가 가리고, 안쪽 글자(.line__text)가 올라옴 -->
     <section class="hero" id="top" aria-labelledby="hero-title">
+
+      <!-- 히어로 위쪽: 왼쪽은 정보 줄(누구인지), 오른쪽은 쇼릴 미리보기(무엇을 만드는지) -->
+      <div class="wrap hero__top">
+        <div class="hero__intro">
+          <p class="hero__lead">움직임으로 아이디어를 전달하고,<br>AI 툴로 제작 과정을 넓혀 갑니다.</p>
+          <ul class="hero__meta">
+            <!-- TODO: 지원 상태와 지역 문구는 공개해도 되는지 직접 결정 (연락 섹션의 지역 문구와 함께) -->
+            <li class="hero__status">영상·모션 직무 지원 중</li>
+            <li>천안·아산, 원격 가능</li>
+            <li>한국 시각 <time id="kst-clock">--:--</time></li>
+          </ul>
+        </div>
+
+        <!-- 쇼릴 미리보기: 누르면 쇼릴 섹션으로 이동. 영상이 생기면 .pv-screen 안을 짧은 영상으로 교체 -->
+        <a class="hero__preview" href="#reel" data-cursor="Reel">
+          <span class="pv-screen" aria-hidden="true">
+            <span class="pv-word"><span class="pv-letter" style="--i:0">S</span><span class="pv-letter" style="--i:1">H</span><span class="pv-letter" style="--i:2">O</span><span class="pv-letter" style="--i:3">W</span><span class="pv-letter" style="--i:4">R</span><span class="pv-letter" style="--i:5">E</span><span class="pv-letter" style="--i:6">E</span><span class="pv-letter" style="--i:7">L</span></span>
+            <span class="pv-bar"><span class="pv-progress"></span></span>
+          </span>
+          <span class="pv-caption"><span>Showreel 2026</span><span>영상 준비 중</span></span>
+        </a>
+      </div>
+
       <div class="wrap hero__inner">
         <!-- 감싸는 상자(.hero__name-wrap): 스크롤로 작아지며 사라지는 연출을 담당.
              3D 이름(h1)에 직접 투명도를 주면 입체감이 납작해지기 때문에 바깥 상자에 줌 -->

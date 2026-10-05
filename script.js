@@ -453,6 +453,8 @@ const lenis = (() => {
    - 글자를 하나씩 쪼개서, 마우스가 가까워지면 그 글자가 위로 뜨고 앞으로 튀어나오고 기울어짐
    - 이름 전체도 마우스 위치에 따라 3D로 기울어짐 (뒤에 깔린 두께 층이 드러나 입체로 보임)
    - 처음 몇 초 동안은 마우스가 없어도 천천히 흔들리다가 멈춤 (계속 움직이면 읽기 불편하므로)
+   - 휴대폰용: 글자를 톡 치면 그 자리에서 물결이 퍼지며 글자가 튀어나옴 (마우스 클릭도 동일)
+   - 스크롤하면 스크롤 속도만큼 글자가 눕고 두께가 드러남 (휴대폰, 데스크톱 모두)
    - 모션 줄이기 설정을 켠 사용자에게는 쪼개기만 하고 움직임은 없음
    ========================================================== */
 (() => {
@@ -543,6 +545,10 @@ const lenis = (() => {
   let visible = true;        // 히어로가 화면에 보이는가
   let frameId = 0;
   let startedAt = 0;
+  let ripples = [];                    // 탭할 때 생기는 물결 { x, y, start } (페이지 좌표)
+  let lastScrollY = window.scrollY;
+  let scrollVel = 0;                   // 스크롤 속도 (부드럽게 다듬은 값)
+  const RIPPLE_LIFE = 1200;            // 물결이 살아 있는 시간(ms)
 
   function frame(now) {
     frameId = requestAnimationFrame(frame);
@@ -551,6 +557,17 @@ const lenis = (() => {
     const rect = hero.getBoundingClientRect();
     const calm = clamp(1 - (now - startedAt - 3000) / 1500, 0, 1);   // 3초 뒤부터 1.5초에 걸쳐 잦아듦
     let moving = false;
+
+    // 스크롤 속도: 이번 프레임에 움직인 거리를 부드럽게 다듬어서, 글자가 기우는 각도로 씀
+    const sy = window.scrollY;
+    scrollVel = lerp(scrollVel, sy - lastScrollY, 0.25);
+    lastScrollY = sy;
+    if (Math.abs(scrollVel) > 0.05) moving = true;
+    const kick = clamp(scrollVel * 0.9, -22, 22);
+
+    // 오래된 물결은 지움
+    ripples = ripples.filter((r) => now - r.start < RIPPLE_LIFE);
+    if (ripples.length) moving = true;
 
     // 이름 전체의 기울기
     let targetX;
@@ -599,6 +616,27 @@ const lenis = (() => {
         };
       }
 
+      // 물결: 퍼져 나가는 둥근 띠가 지나가는 글자가 튀어나옴 (시간이 지날수록 약해짐)
+      let wave = 0;
+      ripples.forEach((r) => {
+        const age = now - r.start;
+        const ring = age * 0.9;                                   // 1초에 900px씩 퍼짐
+        const d = Math.hypot(r.x - c.cx, r.y - c.cy);
+        const band = Math.exp(-(((d - ring) / 70) ** 2));          // 띠에 가까울수록 1
+        wave = Math.max(wave, band * (1 - age / RIPPLE_LIFE));
+      });
+      if (wave > 0.001) {
+        target.tz += wave * 90;
+        target.ty -= wave * 18;
+        target.rx -= wave * 14;
+        target.s += wave * 0.06;
+        target.depth += wave * 24;
+      }
+
+      // 스크롤 반응: 스크롤하는 방향으로 글자가 눕고 두께가 드러남
+      target.rx += kick;
+      target.depth += Math.min(Math.abs(kick) * 1.1, 22);
+
       Object.keys(target).forEach((key) => {
         c.v[key] = lerp(c.v[key], target[key], 0.14);
         if (Math.abs(c.v[key] - target[key]) > 0.02) moving = true;
@@ -638,6 +676,12 @@ const lenis = (() => {
     frameId = 0;
   }
 
+  function addRipple(clientX, clientY) {
+    ripples.push({ x: clientX + window.scrollX, y: clientY + window.scrollY, start: performance.now() });
+    if (ripples.length > 4) ripples.shift();
+    startLoop();
+  }
+
   // 첫 등장 연출이 끝나면 가림막을 걷고 움직임을 시작
   function start() {
     if (ready) return;
@@ -646,6 +690,14 @@ const lenis = (() => {
     measure();
     startedAt = performance.now();
     startLoop();
+
+    // 마우스가 없는 기기: 만질 수 있다는 걸 알려 주려고 물결을 한 번 보여 줌
+    if (!hasFinePointer) {
+      setTimeout(() => {
+        const r = title.getBoundingClientRect();
+        addRipple(r.left + r.width * 0.3, r.top + r.height * 0.6);
+      }, 500);
+    }
   }
 
   chars[chars.length - 1].el.addEventListener("animationend", start, { once: true });
@@ -663,6 +715,24 @@ const lenis = (() => {
     pointer = null;
     startLoop();   // 제자리로 돌아오는 움직임을 끝까지 보여 줌
   });
+
+  // 탭 판별: 손가락을 거의 움직이지 않고 짧게 눌렀다 뗀 경우만 (스크롤하려던 터치는 제외)
+  // 링크와 버튼을 누른 경우도 제외
+  let press = null;
+  hero.addEventListener("pointerdown", (event) => {
+    if (event.target.closest("a, button")) return;
+    press = { x: event.clientX, y: event.clientY, t: performance.now() };
+  });
+  hero.addEventListener("pointerup", (event) => {
+    if (!press) return;
+    const moved = Math.hypot(event.clientX - press.x, event.clientY - press.y);
+    if (moved < 10 && performance.now() - press.t < 500) addRipple(event.clientX, event.clientY);
+    press = null;
+  });
+  hero.addEventListener("pointercancel", () => { press = null; });
+
+  // 스크롤하면 반응하도록 반복을 깨움 (히어로가 화면에 있을 때만 실제로 돎)
+  window.addEventListener("scroll", () => startLoop(), { passive: true });
 
   // 히어로가 화면 밖이거나 탭이 숨겨지면 멈춤
   new IntersectionObserver(([entry]) => {
@@ -833,7 +903,8 @@ const lenis = (() => {
 
   // 무엇 위에 있는지에 따라 커서 모양을 바꿈
   document.addEventListener("pointerover", (event) => {
-    const card = event.target.closest(".work");
+    // 작업 카드나 data-cursor 가 있는 요소(쇼릴 미리보기) 위에서는 큰 원 + 글자
+    const card = event.target.closest(".work, [data-cursor]");
     const interactive = event.target.closest("a, button");
     cursor.classList.toggle("is-card", Boolean(card));
     cursor.classList.toggle("is-link", !card && Boolean(interactive));
@@ -857,4 +928,27 @@ const lenis = (() => {
     const above = entry.boundingClientRect.top < 0;   // 위쪽으로 빠져나갔는가
     header.classList.toggle("has-brand", !entry.isIntersecting && above);
   }, { threshold: 0 }).observe(name);
+})();
+
+/* ==========================================================
+   9) 히어로 위쪽의 한국 시각 (1분마다 갱신)
+   ========================================================== */
+(() => {
+  const clock = document.getElementById("kst-clock");
+  if (!clock) return;
+
+  const format = new Intl.DateTimeFormat("en-GB", {
+    timeZone: "Asia/Seoul",
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: false
+  });
+
+  function tick() {
+    const now = new Date();
+    clock.textContent = format.format(now);
+    // 다음 '분'이 바뀌는 순간에 맞춰 다시 실행
+    setTimeout(tick, 60000 - (now.getSeconds() * 1000 + now.getMilliseconds()) + 50);
+  }
+  tick();
 })();
