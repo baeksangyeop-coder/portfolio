@@ -591,7 +591,7 @@ h1, h2, h3, p, dl, dd { margin: 0; }
   font-weight: 800;
   line-height: 1;
   letter-spacing: -.02em;
-  color: var(--metal-dim);
+  color: var(--metal-mid);   /* 카드 배경 대비 약 5.8:1 */
 }
 
 .reel-stage__note { margin-top: 1rem; color: var(--text-dim); }
@@ -1531,8 +1531,9 @@ html.intro-hold .hero__actions { animation-play-state: paused; }
   }
 }
 
+/* 시작값 .55: 흐린 상태에서도 배경 대비 약 5:1이라 읽기 기준(4.5:1)을 넘음 */
 @keyframes word-in {
-  from { opacity: .2; }
+  from { opacity: .55; }
   to   { opacity: 1; }
 }
 
@@ -1629,8 +1630,8 @@ html.intro-hold .hero__actions { animation-play-state: paused; }
 }
 
 @keyframes reel-content {
-  from { translate: 0 var(--reel-shift); scale: .85; opacity: .5; }
-  to   { translate: 0 0; scale: 1; opacity: 1; }
+  from { translate: 0 var(--reel-shift); scale: .85; }
+  to   { translate: 0 0; scale: 1; }
 }
 
 /* ==========================================================
