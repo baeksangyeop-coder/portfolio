@@ -405,7 +405,7 @@ const WORKS = [
     tags: ["엑셀 자동화"],
     link: "",
     image: "",
-    thumb: "merge",
+    thumb: "settle",
     status: "",
     visible: true
   },

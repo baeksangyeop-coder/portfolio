@@ -270,6 +270,19 @@ const lenis = (() => {
         <span class="tm-name th-anim th-pop-d">9월_매출보고서.xlsx</span>
       </div>`,
 
+    // 두 쇼핑몰 정산을 합쳐 순이익과 빠진 정산을 찾는 작업 (Settlement Helper)
+    settle: () => `
+      <div class="tm-files">
+        <span class="th-anim th-merge-a">스마트스토어</span>
+        <span class="th-anim th-merge-c">쿠팡</span>
+      </div>
+      <div class="tl-ledger">
+        <div class="tl-row th-anim th-pop-a"><span>정산금액</span><b>9,530,313</b></div>
+        <div class="tl-row th-anim th-pop-b"><span>원가·광고·반품</span><b>−5,319,000</b></div>
+        <div class="tl-row tl-total th-anim th-pop-c"><span>순이익</span><b>4,211,313</b></div>
+      </div>
+      <span class="tl-alert th-anim th-pop-d">정산 누락 3건 · 받을 돈 189,236원</span>`,
+
     excel: () => `
       <span class="tx-progress th-anim th-fill"></span>
       <div class="tx-sheet">

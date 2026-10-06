@@ -1056,6 +1056,40 @@ h1, h2, h3, p, dl, dd { margin: 0; }
   color: var(--metal-hi);
 }
 
+/* settle: 두 쇼핑몰 → 정산 장부 → 순이익, 빠진 정산 알림 */
+.tl-ledger {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--u) * 1.2);
+  padding: calc(var(--u) * 2.4) calc(var(--u) * 3.2);
+  border: 1px solid var(--metal-lo);
+  border-radius: calc(var(--u) * 1.6);
+  background: var(--bg);
+}
+.tl-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: calc(var(--u) * 3);
+  color: var(--text-dim);
+}
+.tl-row b { font-weight: 700; color: var(--text); font-variant-numeric: tabular-nums; }
+.tl-total {
+  padding-top: calc(var(--u) * 1.2);
+  border-top: 1px solid var(--line);
+  font-weight: 700;
+  color: var(--text);
+}
+.tl-total b { font-size: calc(var(--u) * 3.6); color: var(--metal-hi); }
+.tl-alert {
+  align-self: flex-end;
+  padding: calc(var(--u) * .8) calc(var(--u) * 2);
+  border: 1px solid var(--metal-mid, var(--metal-lo));
+  border-radius: 999px;
+  font-size: calc(var(--u) * 2.6);
+  font-weight: 700;
+  color: var(--metal-hi);
+}
+
 /* excel: 진행 막대가 차오르는 동안 표의 행이 차례로 채워지고, 합계 행과 결과 파일이 나타남 */
 .tx-progress {
   display: block;
