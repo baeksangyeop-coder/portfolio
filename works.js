@@ -382,12 +382,22 @@ const WORKS = [
     flow: {
       nodes: [
         { id: "rules", title: "계산 규칙 먼저", text: "순이익 공식, 반품·취소·누락, 나눗셈", x: 8, y: 50 },
-        { id: "data", title: "문제를 심은 데이터", text: "정답은 다른 코드로 따로 계산", x: 26, y: 22 },
-        { id: "adapter", title: "쇼핑몰별 번역기", text: "다른 양식을 공통 표 하나로", x: 26, y: 78 },
+        { id: "data", title: "문제를 심은 데이터", text: "정답은 다른 코드로 따로 계산", x: 26, y: 22,
+          image: "images/works/settlement-helper/01-data.webp",
+          caption: "같은 9월 정산인데 양식이 전혀 다른 두 파일. 스마트스토어는 제목 줄, 쉼표가 섞인 글자 금액, 2026.09.09 날짜이고, 쿠팡은 두 번째 시트에 20260910 날짜와 숫자 금액. 여기에 정산 누락, 금액 오류 같은 문제를 일부러 심음" },
+        { id: "adapter", title: "쇼핑몰별 번역기", text: "다른 양식을 공통 표 하나로", x: 26, y: 78,
+          image: "images/works/settlement-helper/02-adapter.webp",
+          caption: "번역기 확인 결과. 두 쇼핑몰이 같은 모양의 공통 표로 바뀌었고, 주문번호 앞의 0이 살아 있으며, 쿠팡 요약 시트의 합계와 번역 결과의 합계가 4,511,724원으로 같음" },
         { id: "match", title: "상품 짝과 원가", text: "비슷한 이름은 추천만, 결정은 사람", x: 47, y: 50 },
-        { id: "profit", title: "순이익 계산", text: "원 단위 정수, 남는 원은 첫 줄에", x: 68, y: 22 },
-        { id: "recon", title: "주문과 정산 대조", text: "받을 돈 189,236원, 금액 오류 3건", x: 68, y: 78 },
-        { id: "app", title: "화면과 보고서", text: "160칸 일치, exe로 납품", x: 89, y: 50 }
+        { id: "profit", title: "순이익 계산", text: "원 단위 정수, 남는 원은 첫 줄에", x: 68, y: 22,
+          image: "images/works/settlement-helper/03-profit.webp",
+          caption: "쇼핑몰·상품별 순이익. 광고비만 쓰고 이달 판매가 없었던 스마트스토어 트렌치 코트가 -50,000원 빨간 줄로 드러남" },
+        { id: "recon", title: "주문과 정산 대조", text: "받을 돈 189,236원, 금액 오류 3건", x: 68, y: 78,
+          image: "images/works/settlement-helper/04-recon.webp",
+          caption: "주문과 정산을 맞대 본 결과. 정산 누락 3건(받을 돈 189,236원)과 금액 오류 3건을 찾았고, 심어 둔 문제와 정확히 같음" },
+        { id: "app", title: "화면과 보고서", text: "160칸 일치, exe로 납품", x: 89, y: 50,
+          image: "images/works/settlement-helper/05-app.webp",
+          caption: "프로그램 요약 화면과 공식 검산. 프로그램과 다른 코드로 따로 계산한 정답과 20개 상품 x 8개 항목, 160칸이 원 단위까지 일치" }
       ],
       edges: [["rules", "data"], ["rules", "adapter"], ["data", "match"], ["adapter", "match"],
               ["match", "profit"], ["match", "recon"], ["profit", "app"], ["recon", "app"]]
